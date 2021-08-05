@@ -21,7 +21,7 @@ test("renders ONE error message if user enters less then 5 characters into first
   userEvent.type(screen.getByLabelText(/first name/i), "test");
   await waitFor(() => {
     expect(
-      screen.queryByText("Error: firstName must have at least 5 characters.")
+      screen.getByText("Error: firstName must have at least 5 characters.")
     ).toBeInTheDocument();
   });
 });
@@ -30,12 +30,7 @@ test("renders THREE error messages if user enters no values into any fields.", a
   render(<ContactForm />);
   userEvent.click(screen.queryByTestId("submit"));
   await waitFor(() => {
-    const errorArr = screen.queryAllByTestId("error");
-    let error;
-    errorArr.map((err) => {
-      return (error = err);
-    });
-    expect(error).toBeInTheDocument();
+    expect(screen.queryAllByTestId("error")).toHaveLength(3);
   });
 });
 
@@ -45,8 +40,9 @@ test("renders ONE error message if user enters a valid first name and last name 
   userEvent.type(screen.getByPlaceholderText(/burke/i), "test2");
   userEvent.click(screen.getByTestId("submit"));
   await waitFor(() => {
-    const error = screen.queryByTestId("error");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Error: email must be a valid email address.")
+    ).toBeInTheDocument();
   });
 });
 
@@ -97,6 +93,8 @@ test("renders all fields text when all fields are submitted.", async () => {
     expect(screen.getByText("test1")).toBeInTheDocument();
     expect(screen.getByText("test2")).toBeInTheDocument();
     expect(screen.getByText("test@test.com")).toBeInTheDocument();
-    expect(screen.getByText("this is a test message")).toBeInTheDocument();
+    expect(screen.getByTestId("messageDisplay")).toHaveTextContent(
+      "this is a test message"
+    );
   });
 });
