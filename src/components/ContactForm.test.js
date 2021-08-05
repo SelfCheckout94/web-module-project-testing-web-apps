@@ -26,19 +26,17 @@ test("renders ONE error message if user enters less then 5 characters into first
 });
 
 test("renders THREE error messages if user enters no values into any fields.", async () => {
-  // const mockHandleSubmit = jest.fn();
-  // // User clicks submit
-  // // error message appears
-  // render(<ContactForm handleSubmit={mockHandleSubmit} />);
-  // // declaring button as variable
-  // const button = screen.getByText(/submit/i);
-  // // button is clicked
-  // console.log(button);
-  // userEvent.click(button);
-  // // declaring error as variable
-  // const error = screen.queryByTestId("error");
-  // // assert that error is in the document
-  // expect(error).toBeInTheDocument();
+  render(<ContactForm />);
+  const button = screen.queryByTestId("submit");
+  userEvent.click(button);
+  await waitFor(() => {
+    const errorArr = screen.queryAllByTestId("error");
+    let error;
+    errorArr.map((err) => {
+      return (error = err);
+    });
+    expect(error).toBeInTheDocument();
+  });
 });
 
 test("renders ONE error message if user enters a valid first name and last name but no email.", async () => {});
